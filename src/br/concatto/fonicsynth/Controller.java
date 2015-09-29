@@ -7,15 +7,24 @@ public class Controller extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Keyboard keyboard = new Keyboard(3, 3);
+		Keyboard keyboard = new Keyboard(3, 19, 3);
 		MainScene mainScene = new MainScene(keyboard);		
 
-		primaryStage.setTitle("Fonic Synth");
+		//Gambiarrinha
+		primaryStage.setOnShown(e -> {
+			primaryStage.setWidth(primaryStage.getMinWidth() + 1);
+			primaryStage.setHeight(primaryStage.getMinHeight() + 1);
+		});
+		
 		primaryStage.setMinWidth(keyboard.getNaturalKeyCount() * 30 + 1);
 		primaryStage.setMinHeight(380);
+		primaryStage.setTitle("Fonic Synth");
 		primaryStage.setScene(mainScene);
+		
 		mainScene.startListening();
 		primaryStage.show();
+		
+		
 	}
 
 	

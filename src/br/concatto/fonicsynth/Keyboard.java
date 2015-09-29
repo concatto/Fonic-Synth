@@ -18,19 +18,24 @@ public class Keyboard extends ArrayList<Key> {
 	};
 	public static final int NATURAL_TONES = 7;
 	
-	private IntegerProperty transposition = new SimpleIntegerProperty();
-	private int instrument;
+	private IntegerProperty transposition = new SimpleIntegerProperty(0);
+	private IntegerProperty instrument = new InstrumentProperty(0);
 	private SoundController sound;
 	private Echo[] echoes;
 	
-	public Keyboard(int transposition, int echoQuantity) throws MidiUnavailableException {
+	public Keyboard(int transposition, int instrument, int echoQuantity) throws MidiUnavailableException {
 		sound = new SoundController();
-		this.transposition.set(transposition);
-		
 		echoes = new Echo[echoQuantity];
 		for (int i = 0; i < echoes.length; i++) {
 			echoes[i] = new Echo();
 		}
+		
+		this.instrument.addListener((obs, o, n) -> {
+			sound.changeInstrument(n.intValue());
+		});
+		
+		this.transposition.set(transposition);
+		this.instrument.set(instrument);
 		
 		for (int i = 0, k = 0; i < 60; i++) {
 			Key key = isSharp(i) ? new SharpKey(k - 1) : new NaturalKey(k++);
@@ -56,7 +61,7 @@ public class Keyboard extends ArrayList<Key> {
 		return -1;
 	}
 
-	private Optional<Key> find(String text, boolean shift) {
+	private Optional<Key> findKey(String text, boolean shift) {
 		if (text.length() > 1) return Optional.empty();
 		text = shift ? SharpKey.adjustKey(text.charAt(0)) : text.toLowerCase();
 		
@@ -70,18 +75,23 @@ public class Keyboard extends ArrayList<Key> {
 	}
 	
 	public void press(String text, boolean shift) {
-		find(text, shift).ifPresent(this::pressKey);
+		findKey(text, shift).ifPresent(this::pressKey);
 	}
 	
 	public void release(String text) {
-		find(text, true).ifPresent(this::releaseKey);
-		find(text, false).ifPresent(this::releaseKey);
+		findKey(text, true).ifPresent(this::releaseKey);
+		findKey(text, false).ifPresent(this::releaseKey);
 	}
 	
 	private void pressKey(Key key) {
 		int nextIndex = findIndex(key) + 1;
 		Key next = nextIndex < size() ? get(nextIndex) : key;
-		if (!key.pressed() && !(next instanceof SharpKey && next.pressed())) {
+		int previousIndex = findIndex(key) - 1;
+		Key previous = previousIndex < size() ? get(previousIndex) : key;
+		
+		if (!key.pressed() && !(next instanceof SharpKey && next.pressed())
+				&& !(key instanceof SharpKey && previous instanceof NaturalKey && previous.pressed())) {
+			
 			key.press();
 			sound.on(key.getNumber());
 			playEchoes(key.getNumber());
@@ -92,6 +102,18 @@ public class Keyboard extends ArrayList<Key> {
 		key.release();
 		sound.off(key.getNumber());
 		stopEchoes(key.getNumber());
+	}
+	
+	public void changeInstrument(boolean increment) {
+		if (KeyboardLimits.isInstrumentChangeWithinLimits(instrument.get(), increment)) {
+			instrument.set(instrument.get() + (increment ? 1 : -1));
+		}
+	}
+	
+	public void changeTransposition(boolean increment) {
+		if (KeyboardLimits.isTranspositionChangeWithinLimits(transposition.get(), increment)) {
+			transposition.set(transposition.get() + (increment ? 1 : -1));
+		}
 	}
 
 	public void setTransposition(int transposition) {
@@ -107,15 +129,18 @@ public class Keyboard extends ArrayList<Key> {
 	}
 	
 	public int getNaturalKeyCount() {
-		return (int) stream().filter(key -> key instanceof NaturalKey).count();
+		return stream().filter(key -> key instanceof NaturalKey).mapToInt(key -> 1).sum();
 	}
 	
 	public void setInstrument(int instrument) {
-		this.instrument = instrument;
-		sound.changeInstrument(instrument);
+		this.instrument.set(instrument);
 	}
 	
 	public int getInstrument() {
+		return instrument.get();
+	}
+	
+	public IntegerProperty instrumentProperty() {
 		return instrument;
 	}
 	
@@ -141,9 +166,10 @@ public class Keyboard extends ArrayList<Key> {
 	}
 
 	public boolean isAnyPressed() {
-		for (Key key : this) {
-			if (key.pressed()) return true;
-		}
-		return false;
+		return stream().anyMatch(Key::pressed);
+	}
+	
+	public void releaseAll() {
+		stream().filter(key -> key.pressed()).forEach(this::releaseKey);
 	}
 }
