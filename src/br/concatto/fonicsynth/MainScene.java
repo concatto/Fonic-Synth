@@ -20,7 +20,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 public class MainScene extends Scene {
 	private static final Color DISABLED = Color.SILVER;
@@ -33,26 +32,23 @@ public class MainScene extends Scene {
 	private StackPane keyContainer = new StackPane(naturals, sharps);
 	private StackPane octaveContainer = new StackPane();
 	private VBox keyboardWrapper = new VBox(octaveContainer, keyContainer);
-	private Label instrumentName = new Label();
-	private HBox instrumentContainer = new HBox(instrumentName);
 	private VBox root;
 	private Label increaseTransposition;
 	private Label decreaseTransposition;
-	private EchoesPane echoes;
+	private InstrumentPane instrumentPane;
 	
 	public MainScene(Keyboard keyboard) {
-		super(new VBox(10));
+		super(new VBox(15));
 		this.keyboard = keyboard;
-		echoes = new EchoesPane(keyboard.getEchoes());
+		instrumentPane = new InstrumentPane(keyboard);
 		
 		root = (VBox) getRoot();
-		root.getChildren().addAll(keyboardWrapper, instrumentContainer, echoes);
-		root.setPadding(new Insets(10));
+		root.getChildren().addAll(keyboardWrapper, instrumentPane);
+		root.setPadding(new Insets(15));
 		root.setAlignment(Pos.TOP_CENTER);
 		
 		initializeOctaves();
 		initializeKeys();
-		initializeInstrumentControls();
 		
 		decreaseTransposition.textFillProperty().bind(Bindings
 				.when(keyboard.transpositionProperty().isEqualTo(KeyboardLimits.MIN_INSTRUMENT))
@@ -60,16 +56,7 @@ public class MainScene extends Scene {
 		
 		increaseTransposition.textFillProperty().bind(Bindings
 				.when(keyboard.transpositionProperty().isEqualTo(KeyboardLimits.MAX_INSTRUMENT))
-				.then(DISABLED).otherwise(ENABLED));
-		
-		instrumentName.textProperty().bind(keyboard.instrumentProperty().asString());
-		
-		root.autosize();
-	}
-	
-	private void initializeInstrumentControls() {
-		instrumentContainer.setAlignment(Pos.CENTER);
-		instrumentName.setFont(Font.font(18));
+				.then(DISABLED).otherwise(ENABLED));	
 	}
 
 	private void initializeOctaves() {
@@ -128,7 +115,7 @@ public class MainScene extends Scene {
 			if (n) keyboardWrapper.requestFocus();
 		});
 		
-		EventHandler<KeyEvent> listener = new KeyboardListener(keyboard, echoes);
+		EventHandler<KeyEvent> listener = new KeyboardListener(keyboard, instrumentPane);
 		keyboardWrapper.setOnKeyPressed(listener);
 		keyboardWrapper.setOnKeyReleased(listener);
 	}

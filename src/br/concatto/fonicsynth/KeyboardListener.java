@@ -6,9 +6,9 @@ import javafx.scene.input.KeyEvent;
 
 public class KeyboardListener implements EventHandler<KeyEvent> {
 	private Keyboard keyboard;
-	private EchoesPane echoes;
+	private InstrumentPane echoes;
 
-	public KeyboardListener(Keyboard keyboard, EchoesPane echoes) {
+	public KeyboardListener(Keyboard keyboard, InstrumentPane echoes) {
 		this.keyboard = keyboard;
 		this.echoes = echoes;
 	}
@@ -44,11 +44,18 @@ public class KeyboardListener implements EventHandler<KeyEvent> {
 			}
 		}
 		
+		if (code == KeyCode.ESCAPE && pressed) {
+			keyboard.releaseAll();
+			echoes.disableAll();                                                                        
+		}
+		
 		if (code.isFunctionKey() && pressed) {
 			//Mapeia F1-12 para 0-11
 			int index = Integer.parseInt(code.getName().substring(1)) - 1;
-			if (index < echoes.getQuantity()) {
-				echoes.invertSelection(index);
+			EchoCombination[] combinations = EchoCombination.values();
+			if (index < combinations.length) {
+				keyboard.releaseAll();
+				echoes.loadCombination(combinations[index]);
 			}
 		}
 		

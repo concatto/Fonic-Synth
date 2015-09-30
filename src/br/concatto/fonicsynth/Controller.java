@@ -16,8 +16,8 @@ public class Controller extends Application {
 			primaryStage.setHeight(primaryStage.getMinHeight() + 1);
 		});
 		
-		primaryStage.setMinWidth(keyboard.getNaturalKeyCount() * 30 + 1);
-		primaryStage.setMinHeight(380);
+		primaryStage.setMinWidth(keyboard.getNaturalKeyCount() * 32 + 1);
+		primaryStage.setMinHeight(600);
 		primaryStage.setTitle("Fonic Synth");
 		primaryStage.setScene(mainScene);
 		

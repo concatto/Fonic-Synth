@@ -41,19 +41,7 @@ public class EchoControl extends VBox {
 		updateLabels();
 	}
 	
-	public void changeDifference(boolean increment) {
-		echo.setOctave(echo.getOctave() + (increment ? 1 : -1));
-		updateLabels();
-	}
-	
-	public void changeInstrument(boolean increment) {
-		if (KeyboardLimits.isInstrumentChangeWithinLimits(echo.getInstrument(), increment)) {
-			echo.setInstrument(echo.getInstrument() + (increment ? 1 : -1));
-			updateLabels();
-		}
-	}
-	
-	private void updateLabels() {
+	public void updateLabels() {
 		instrumentLabel.setText("Instrumento: " + Instruments.get(echo.getInstrument()));
 		int octave = echo.getOctave();
 		octaveLabel.setText("Oitava: " + (octave > 0 ? "+" : "") + octave);
@@ -77,5 +65,18 @@ public class EchoControl extends VBox {
 	
 	public boolean isSelected() {
 		return selected.get();
+	}
+
+	public void setEchoTo(Echo echo) {
+		this.echo.setTo(echo);
+		updateLabels();
+	}
+	
+	public void changeInstrument(boolean increment) {
+		echo.changeInstrument(increment);
+	}
+	
+	public void changeOctave(boolean increment) {
+		echo.changeOctave(increment);
 	}
 }
