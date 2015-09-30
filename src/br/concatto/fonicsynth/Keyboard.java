@@ -87,7 +87,7 @@ public class Keyboard extends ArrayList<Key> {
 		int nextIndex = findIndex(key) + 1;
 		Key next = nextIndex < size() ? get(nextIndex) : key;
 		int previousIndex = findIndex(key) - 1;
-		Key previous = previousIndex < size() ? get(previousIndex) : key;
+		Key previous = previousIndex > 0 ? get(previousIndex) : key;
 		
 		if (!key.pressed() && !(next instanceof SharpKey && next.pressed())
 				&& !(key instanceof SharpKey && previous instanceof NaturalKey && previous.pressed())) {
