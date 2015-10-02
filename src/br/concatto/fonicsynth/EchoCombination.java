@@ -7,10 +7,10 @@ public enum EchoCombination {
 		new Echo(-1, BRIGHT_GRAND_PIANO),
 		new Echo(-1, ELECTRIC_GRAND_PIANO),
 		new Echo(1, BRIGHT_GRAND_PIANO)
-	), CHROMATIC("Progressão cromática",
+	), CHROMATIC("Percussão cromática",
 		new Echo(-1, CELESTA),
 		new Echo(1, GLOCKENSPIEL),
-		new Echo(1, DULCIMER)
+		new Echo(1, MUSIC_BOX)
 	), CHURCH("Igreja",
 		new Echo(-2,CHURCH_ORGAN),
 		new Echo(-1, CHURCH_ORGAN),
