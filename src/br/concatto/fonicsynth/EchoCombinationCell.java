@@ -27,7 +27,7 @@ public class EchoCombinationCell extends Label {
 		super(text);
 		this.header = header;
 		
-		setPadding(new Insets(3, 5, 3, 5));
+		setPadding(new Insets(3, 6, 3, 6));
 		setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT, new Insets(-1))));
 		setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 		setMinWidth(50);
