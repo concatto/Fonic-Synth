@@ -1,8 +1,8 @@
 package br.concatto.fonicsynth;
 
 public abstract class KeyboardLimits {
-	public static final int MAX_TRANSPOSITION = 4;
-	public static final int MIN_TRANSPOSITION = 0;
+	public static final int MAX_TRANSPOSITION = 5;
+	public static final int MIN_TRANSPOSITION = -1;
 	public static final int MAX_INSTRUMENT = 127;
 	public static final int MIN_INSTRUMENT = 0;
 	public static final int MAX_NOTE = 127;

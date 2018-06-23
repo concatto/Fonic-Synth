@@ -26,11 +26,13 @@ public class MainScene extends Scene {
 	private static final Color ENABLED = Color.BLACK;
 	
 	private Keyboard keyboard;
+	private ScalePlayer scalePlayer;
 	private HBox naturals = new HBox(1);
 	private HBox sharps = new HBox();
 	private HBox octaves = new HBox();
 	private StackPane keyContainer = new StackPane(naturals, sharps);
 	private StackPane octaveContainer = new StackPane();
+	private MainMenuBar menuBar = new MainMenuBar();
 	private VBox keyboardWrapper = new VBox(octaveContainer, keyContainer);
 	private VBox root;
 	private Label increaseTransposition;
@@ -40,31 +42,38 @@ public class MainScene extends Scene {
 	public MainScene(Keyboard keyboard) {
 		super(new VBox(15));
 		this.keyboard = keyboard;
+		scalePlayer = new ScalePlayer(keyboard);
+		
 		instrumentPane = new InstrumentPane(keyboard);
 		
+		menuBar.onScaleRequested(scale -> {
+			scalePlayer.play(scale);
+		});
+		
 		root = (VBox) getRoot();
-		root.getChildren().addAll(keyboardWrapper, instrumentPane);
-		root.setPadding(new Insets(15));
+		root.getChildren().addAll(menuBar, keyboardWrapper, instrumentPane);
+		root.setPadding(new Insets(0, 0, 15, 0));
 		root.setAlignment(Pos.TOP_CENTER);
 		
 		initializeOctaves();
 		initializeKeys();
 		
 		decreaseTransposition.textFillProperty().bind(Bindings
-				.when(keyboard.transpositionProperty().isEqualTo(KeyboardLimits.MIN_INSTRUMENT))
+				.when(keyboard.transpositionProperty().isEqualTo(KeyboardLimits.MIN_TRANSPOSITION))
 				.then(DISABLED).otherwise(ENABLED));
 		
 		increaseTransposition.textFillProperty().bind(Bindings
-				.when(keyboard.transpositionProperty().isEqualTo(KeyboardLimits.MAX_INSTRUMENT))
+				.when(keyboard.transpositionProperty().isEqualTo(KeyboardLimits.MAX_TRANSPOSITION))
 				.then(DISABLED).otherwise(ENABLED));	
 	}
 
 	private void initializeOctaves() {
+		
 		for (int i = 0; i < 5; i++) {
 			Label octave = new Label();
 			octave.setAlignment(Pos.CENTER);
-			octave.textProperty().bind(keyboard.transpositionProperty().add(i + 1).asString("%dª oitava"));
-			octave.prefWidthProperty().bind(keyContainer.maxWidthProperty().divide(5));
+			octave.textProperty().bind(keyboard.transpositionProperty().add(i).asString("Oitava %d"));
+			octave.prefWidthProperty().bind(keyContainer.maxWidthProperty());
 			
 			octaves.getChildren().add(octave);
 			if (i < 4) {

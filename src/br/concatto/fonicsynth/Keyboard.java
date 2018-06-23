@@ -39,7 +39,7 @@ public class Keyboard extends ArrayList<Key> {
 		
 		for (int i = 0, k = 0; i < 60; i++) {
 			Key key = isSharp(i) ? new SharpKey(k - 1) : new NaturalKey(k++);
-			key.numberProperty().bind(this.transposition.multiply(12).add(i).asString());
+			key.numberProperty().bind(this.transposition.multiply(12).add(12 + i).asString());
 			add(key);
 		}
 	}
@@ -51,6 +51,22 @@ public class Keyboard extends ArrayList<Key> {
 	
 	public static char key(int index) {
 		return KEYS[index];
+	}
+	
+	private Optional<Key> findByMIDI(int value) {
+		for (Key key : this) {
+			if (key.getNumber() == value) {
+				return Optional.of(key);
+			}
+		}
+		
+		return Optional.empty();
+	}
+	
+	public void pressByMIDI(int value) {
+		findByMIDI(value).ifPresent(key -> {
+			pressKey(key);
+		});
 	}
 	
 	private int findIndex(Key key) {

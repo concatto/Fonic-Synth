@@ -1,21 +1,17 @@
 package br.concatto.fonicsynth;
 
+import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 
 public class EchoCombinationTable extends GridPane {
 	public EchoCombinationTable() {
 		super();
-		setBorder(new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.5))));
 		
 		fillTable();
 		selectCombination(-1);
+		
+		setPadding(new Insets(0, 0, 0, 15));
 	}
 	
 	private void fillTable() {
