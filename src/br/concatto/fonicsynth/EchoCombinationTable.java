@@ -22,8 +22,8 @@ public class EchoCombinationTable extends GridPane {
 		add(new EchoCombinationCell("Nenhum"), 1, 1);
 		
 		EchoCombination[] combinations = EchoCombination.values();
-		for (int i = 0; i < combinations.length; i++) {
-			add(new EchoCombinationCell("F" + (i + 1)), 0, i + 2);
+		for (int i = 1; i < combinations.length; i++) {
+			add(new EchoCombinationCell("F" + (i)), 0, i + 2);
 			add(new EchoCombinationCell(combinations[i].getName()), 1, i + 2);
 		}
 	}

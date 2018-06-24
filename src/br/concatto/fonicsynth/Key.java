@@ -65,4 +65,10 @@ public class Key extends VBox {
 	public int getNumber() {
 		return Integer.parseInt(numberLabel.getText());
 	}
+	
+	public void setTextShown(boolean textShown) {
+		keyLabel.setVisible(textShown);
+		noteLabel.setVisible(textShown);
+		numberLabel.setVisible(textShown);
+	}
 }

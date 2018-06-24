@@ -44,17 +44,27 @@ public class KeyboardListener implements EventHandler<KeyEvent> {
 			}
 		}
 		
+		if (code == KeyCode.TAB && e.isControlDown() && pressed) {
+			keyboard.switchMode();
+		}
+		
+		if (code == KeyCode.SPACE && pressed) {
+			keyboard.playDrum();
+		}
+		
 		if (code == KeyCode.ESCAPE && pressed) {
 			keyboard.releaseAll();
-			echoes.disableAll();                                                                        
+			echoes.disableAll();
+			keyboard.sendEvent(KeyboardEvent.COMBINATION, 0);
 		}
 		
 		if (code.isFunctionKey() && pressed) {
 			//Mapeia F1-12 para 0-11
-			int index = Integer.parseInt(code.getName().substring(1)) - 1;
+			int index = Integer.parseInt(code.getName().substring(1));
 			EchoCombination[] combinations = EchoCombination.values();
 			if (index < combinations.length) {
 				keyboard.releaseAll();
+				keyboard.sendEvent(KeyboardEvent.COMBINATION, index); //Não deveria estar aqui, cuidado no futuro!
 				echoes.loadCombination(combinations[index]);
 			}
 		}

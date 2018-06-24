@@ -11,35 +11,48 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Synthesizer;
 
 public class SoundController {
+	private int channel;
+	
 	private Synthesizer synth;
 	private MidiChannel channels[];
 	private Instrument[] instruments;
 	
-	public SoundController() throws MidiUnavailableException {
+	public SoundController(int channel) throws MidiUnavailableException {
+		this.channel = channel;
 		synth = MidiSystem.getSynthesizer();
 		synth.open();
+		channels = synth.getChannels();
 		
 		try {
-			URL url = SoundController.class.getClassLoader().getResource("genusrmusescore.sf2");
-			instruments = MidiSystem.getSoundbank(url).getInstruments();
+			URL regular = SoundController.class.getClassLoader().getResource("genusrmusescore.sf2");
+			URL drums = SoundController.class.getClassLoader().getResource("FluidR3.SF2");
+			Instrument drumkit = MidiSystem.getSoundbank(drums).getInstruments()[10];
+			synth.loadInstrument(drumkit);
+			channels[9].programChange(drumkit.getPatch().getProgram());
+			
+			instruments = MidiSystem.getSoundbank(regular).getInstruments();
 		} catch (InvalidMidiDataException | IOException e) {
 			instruments = synth.getDefaultSoundbank().getInstruments();
 			e.printStackTrace();
 		}
 		
-		channels = synth.getChannels();
+//		instruments = synth.getDefaultSoundbank().getInstruments();
+	}
+	
+	public SoundController() throws MidiUnavailableException {
+		this(0);
 	}
 	
 	public void on(int note) {
-		on(note, 0);
+		on(note, channel);
 	}
 	
 	public void off(int note) {
-		off(note, 0);
+		off(note, channel);
 	}
 	
 	public void changeInstrument(int instrument) {
-		changeInstrument(instrument, 0);
+		changeInstrument(instrument, channel);
 	}
 	
 	public void on(int note, int channel) {
@@ -58,5 +71,13 @@ public class SoundController {
 			synth.loadInstrument(instruments[instrument]);
 			channels[channel].programChange(instrument);
 		}
+	}
+	
+	public int getDefaultChannel() {
+		return channel;
+	}
+	
+	public void setDefaultChannel(int defaultChannel) {
+		this.channel = defaultChannel;
 	}
 }

@@ -36,7 +36,7 @@ public class ScalePlayer {
 		if (type == ScaleType.MAJOR) {
 			return new int[] {0, 2, 2, 1, 2, 2, 2};
 		} else if (type == ScaleType.MINOR) {
-			return new int[] {0, 2, 1, 2, 2, 2, 1};
+			return new int[] {0, 2, 1, 2, 2, 1, 2};
 		}
 		
 		return null;
